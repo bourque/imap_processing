@@ -62,17 +62,17 @@ EXPECTED_NUM_VARIABLES = [
     0,  # lo-ialirt  # TODO: Need to implement
     148,  # hskp
     3,  # lo-counters-aggregated
-    3,  # lo-counters-singles
-    7,  # lo-sw-priority
-    4,  # lo-nsw-priority
-    18,  # lo-sw-species
-    10,  # lo-nsw-species
-    6,  # lo-sw-angular
-    3,  # lo-nsw-angular
+    9,  # lo-counters-singles
+    13,  # lo-sw-priority
+    10,  # lo-nsw-priority
+    24,  # lo-sw-species
+    16,  # lo-nsw-species
+    12,  # lo-sw-angular
+    9,  # lo-nsw-angular
     1,  # hi-counters-aggregated
     3,  # hi-counters-singles
-    8,  # hi-omni
-    4,  # hi-sectored
+    10,  # hi-omni
+    6,  # hi-sectored
     0,  # hi-priority  # TODO: Need to implement
     0,  # lo-pha  # TODO: Need to implement
     0,  # hi-pha  # TODO: Need to implement
@@ -115,8 +115,22 @@ def test_l1a_data_array_shape(test_l1a_data, index):
         pytest.xfail("Data product is currently unsupported")
 
     for variable in processed_dataset:
+        # For variables with energy dimensions
         if variable in ["energy_table", "acquisition_time_per_step"]:
             assert processed_dataset[variable].data.shape == (128,)
+        # For "support" variables with epoch dimensions
+        elif variable in [
+            "rgfo_half_spin",
+            "nso_half_spin",
+            "sw_bias_gain_mode",
+            "st_bias_gain_mode",
+            "data_quality",
+            "spin_period",
+        ]:
+            assert processed_dataset[variable].data.shape == (
+                len(processed_dataset["epoch"].data),
+            )
+        # For counter variables
         else:
             assert processed_dataset[variable].data.shape == expected_shape
 
@@ -151,9 +165,11 @@ def test_l1a_logical_sources(test_l1a_data, index):
 
 
 @pytest.mark.parametrize("index", range(len(EXPECTED_NUM_VARIABLES)))
-def test_l1a_num_variables(test_l1a_data, index):
-    """Tests that the data arrays in the generated CDFs have the expected number
-    of variables.
+def test_l1a_num_data_variables(test_l1a_data, index):
+    """Tests that the generated CDFs have the expected number of data variables.
+
+    These data variables include counter data (e.g. hplus, heplus, etc.) as well
+    as any "support" variables (e.g. data_quality, spin_period, etc.).
 
     Parameters
     ----------
@@ -192,15 +208,20 @@ def test_l1a_data_array_values(test_l1a_data: xr.Dataset, index):
     if index in [0, 1, 15, 16, 17]:
         pytest.xfail("Data product is currently unsupported")
 
-    if descriptor == "lo-sw-angular":
+    # TODO: Currently only lo-(n)sw-angular data can be validated, expand this
+    #       to other data products as I validate them.
+    if descriptor in ["lo-sw-angular", "lo-nsw-angular"]:
         counters = getattr(
             constants, f'{descriptor.upper().replace("-","_")}_VARIABLE_NAMES'
         )
         processed_dataset = test_l1a_data[index]
         validation_dataset = load_cdf(VALIDATION_DATA[index])
 
-        # Until I receive updated validation data with appropriate shape, for
-        # now, compare the sum of the data arrays
+        # Joey says that the shape of the data arrays (i.e. how they are
+        # arranged) does not need to follow a specific order, and the SDC can
+        # decide to arrange them how we see fit. As such, the shape of the CDFs
+        # that SDC produces may not match the validation data. To get around
+        # this, compare the sum of the values of the data arrays.
         for counter in counters:
             np.testing.assert_array_equal(
                 getattr(processed_dataset, counter).data.sum(),
