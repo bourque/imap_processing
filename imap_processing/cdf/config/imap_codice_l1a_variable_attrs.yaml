@@ -30,8 +30,9 @@ esa_step:
     FIELDNAM: Energy Index
     FORMAT: I3
     LABLAXIS: Energy Index
+    SCALETYP: linear
     SI_CONVERSION: " > "
-    UNITS: ' '
+    UNITS: " "
     VALIDMIN: 0
     VALIDMAX: 127
     VAR_TYPE: support_data
@@ -70,6 +71,7 @@ acquisition_time_per_step:
     FILLVAL: -1.0e+30
     FORMAT: F10.3
     LABLAXIS: " "
+    SCALETYP: linear
     SI_CONVERSION: " > "
     UNITS: ms
     VALIDMIN: 0.000000
@@ -80,26 +82,128 @@ counters_attrs: &counters
     <<: *default
     CATDESC: Fill in at creation
     DEPEND_0: epoch
-    DEPEND_1: esa_step
+    DEPEND_1: inst_az
+    DEPEND_2: spin_sector
+    DEPEND_3: esa_step
     DISPLAY_TYPE: time_series
     FIELDNAM: Fill in at creation
+    FORMAT: I7
+    SCALETYP: linear
+    SI_CONVERSION: " > "
     UNITS: counts
     VALIDMIN: 0
     VALIDMAX: 8388607  # max value for a signed 24-bit integer
+    VAR_TYPE: data
+
+data_quality:
+    <<: *default
+    CATDESC: Indicates whether data quality is suspect (1).
+    DEPEND_0: epoch
+    DISPLAY_TYPE: time_series
+    FIELDNAM: Data Quality
+    FILLVAL: 255
+    FORMAT: I1
+    LABLAXIS: Data Quality
+    SCALETYP: linear
+    SI_CONVERSION: " > "
+    UNITS: " "
+    VALIDMIN: 0
+    VALIDMAX: 1
+    VAR_TYPE: data
 
 energy_table:
     <<: *default
     CATDESC: ElectroStatic Analyzer Energy Values
     DEPEND_1: esa_step
-    FIELDNAM: ESA Voltage
+    FIELDNAM: Energy Table
     FORMAT: I5
-    LABLAXIS: ESA V
+    LABLAXIS: eV
     SCALETYP: log
     SI_CONVERSION: " > "
     UNITS: eV
     VALIDMIN: 1
     VALIDMAX: 14100
     VAR_TYPE: support_data
+
+nso_half_spin:
+    <<: *default
+    CATDESC: Indicates the point when No Scan Operation (NSO) was activated. In NSO, the ESA voltage is set to the first step in the scan and remains fixed until the next cycle boundary.
+    DEPEND_0: epoch
+    DISPLAY_TYPE: time_series
+    FIELDNAM: NSO Mode
+    FILLVAL: 255
+    FORMAT: I3
+    LABLAXIS: NSO Half Spin
+    SCALETYP: linear
+    SI_CONVERSION: " > "
+    UNITS: half spin number
+    VALIDMIN: 0
+    VALIDMAX: 255
+    VAR_TYPE: data
+
+rgfo_half_spin:
+    <<: *default
+    CATDESC: Indicates the point when Reduced Gain Factor Operation (RGFO) was activated. In RGFO, the Entrance ESA voltage is reduced in order to limit the number of ions that reach the detectors.
+    DEPEND_0: epoch
+    DISPLAY_TYPE: time_series
+    FIELDNAM: RGFO Mode
+    FILLVAL: 255
+    FORMAT: I3
+    LABLAXIS: RGFO Half Spin
+    SCALETYP: linear
+    SI_CONVERSION: " > "
+    UNITS: half spin number
+    VALIDMIN: 0
+    VALIDMAX: 255
+    VAR_TYPE: data
+
+spin_period:
+    <<: *default
+    CATDESC: The spin period as reported by the spacecraft.
+    DEPEND_0: epoch
+    DISPLAY_TYPE: time_series
+    FIELDNAM: Spin Period
+    FILLVAL: 1.0e+31
+    FORMAT: F3.1
+    LABLAXIS: Spin Period
+    SCALETYP: linear
+    SI_CONVERSION: " > "
+    UNITS: s
+    VALIDMIN: 0.0
+    VALIDMAX: 16.0
+    VAR_TYPE: data
+
+st_bias_gain_mode:
+    <<: *default
+    CATDESC: Indicates whether FSW is tracking the Suprathermal High-Gain bias curve or the Suprathermal Low-Gain bias curve.
+    DEPEND_0: epoch
+    DISPLAY_TYPE: " "
+    FIELDNAM: Suprathermal Bias Gain Mode
+    FILLVAL: 255
+    FORMAT: I1
+    LABLAXIS: " "
+    SCALETYP: linear
+    SI_CONVERSION: " > "
+    UNITS: " "
+    VALIDMIN: 0
+    VALIDMAX: 1
+    VAR_TYPE: data
+
+sw_bias_gain_mode:
+    <<: *default
+    CATDESC: Indicates whether FSW is tracking the Solarwind High-Gain bias curve or the Solarwind Low-Gain bias curve.
+    DEPEND_0: epoch
+    DISPLAY_TYPE: " "
+    FIELDNAM: Solarwind Bias Gain Mode
+    FILLVAL: 255
+    FORMAT: I1
+    LABLAXIS: " "
+    SCALETYP: linear
+    SI_CONVERSION: " > "
+    UNITS: " "
+    VALIDMIN: 0
+    VALIDMAX: 1
+    VAR_TYPE: data
 
 # The following are data product-specific
 # hi-counters-aggregated
