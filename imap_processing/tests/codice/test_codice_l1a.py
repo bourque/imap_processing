@@ -227,6 +227,8 @@ def test_l1a_data_array_values(test_l1a_data: xr.Dataset, index):
                 getattr(processed_dataset, counter).data.sum(),
                 getattr(validation_dataset, counter).data.sum(),
             )
+    else:
+        pytest.xfail(f"Still need to implement validation for {descriptor}")
 
 
 def test_l1a_multiple_packets():
