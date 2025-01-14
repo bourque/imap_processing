@@ -293,7 +293,6 @@ class CoDICEL1aPipeline:
             The list of acquisition times from the Lo stepping table.
         """
         # Read in the Lo stepping data table
-        # TODO: Update this CSV file to have 6 significant digits instead of 3
         lo_stepping_data_file = Path(
             f"{imap_module_directory}/codice/data/lo_stepping_values.csv"
         )
