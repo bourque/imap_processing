@@ -10,14 +10,10 @@
 default_attrs: &default
     CATDESC: " "
     DISPLAY_TYPE: no_plot
-    FIELDNAM: ""
+    FIELDNAM: " "
     FILLVAL: -9223372036854775808
     FORMAT: I12
-    REFERENCE_POSITION: ""
-    RESOLUTION: ""
     SCALETYP: linear
-    TIME_BASE: ""
-    TIME_SCALE: ""
     UNITS: dN
     VALIDMIN: -9223372036854775808
     VALIDMAX: 9223372036854775807
@@ -28,6 +24,7 @@ esa_step:
     <<: *default
     CATDESC: Energy per charge (E/q) sweeping step
     FIELDNAM: Energy Index
+    FILLVAL: 254
     FORMAT: I3
     LABLAXIS: Energy Index
     SCALETYP: linear
@@ -41,7 +38,8 @@ inst_az:
     <<: *default
     CATDESC: Instrument Azimuth Index
     FIELDNAM: Azimuth Index
-    FORMAT: I2
+    FILLVAL: 254
+    FORMAT: I3
     LABLAXIS: " "
     SI_CONVERSION: " > "
     UNITS: " "
@@ -53,7 +51,8 @@ spin_sector:
     <<: *default
     CATDESC: Spin sector indicating range of spin angles
     FIELDNAM: Spin Sector Index
-    FORMAT: I2
+    FILLVAL: 254
+    FORMAT: I3
     LABLAXIS: " "
     SI_CONVERSION: " > "
     UNITS: " "
@@ -82,9 +81,6 @@ counters_attrs: &counters
     <<: *default
     CATDESC: Fill in at creation
     DEPEND_0: epoch
-    DEPEND_1: inst_az
-    DEPEND_2: spin_sector
-    DEPEND_3: esa_step
     DISPLAY_TYPE: time_series
     FIELDNAM: Fill in at creation
     FORMAT: I7
@@ -361,41 +357,61 @@ lo-sw-angular-hplus:
     <<: *counters
     CATDESC: Sunward H+ Species
     FIELDNAM: SW - H+
-    LABL_PTR_1: inst_az
-    LABL_PTR_2: spin_sector
-    LABL_PTR_3: esa_step
+    DEPEND_0: epoch
+    DEPEND_1: esa_step
+    DEPEND_2: inst_az
+    DEPEND_3: spin_sector
+    LABL_PTR_1: esa_step
+    LABL_PTR_2: inst_az
+    LABL_PTR_3: spin_sector
 
 lo-sw-angular-heplusplus:
     <<: *counters
     CATDESC: Sunward He++ Species
     FIELDNAM: SW - He++
-    LABL_PTR_1: inst_az
-    LABL_PTR_2: spin_sector
-    LABL_PTR_3: esa_step
+    DEPEND_0: epoch
+    DEPEND_1: esa_step
+    DEPEND_2: inst_az
+    DEPEND_3: spin_sector
+    LABL_PTR_1: esa_step
+    LABL_PTR_2: inst_az
+    LABL_PTR_3: spin_sector
 
 lo-sw-angular-oplus6:
     <<: *counters
     CATDESC: Sunward O+6 Species
     FIELDNAM: SW - O+6
-    LABL_PTR_1: inst_az
-    LABL_PTR_2: spin_sector
-    LABL_PTR_3: esa_step
+    DEPEND_0: epoch
+    DEPEND_1: esa_step
+    DEPEND_2: inst_az
+    DEPEND_3: spin_sector
+    LABL_PTR_1: esa_step
+    LABL_PTR_2: inst_az
+    LABL_PTR_3: spin_sector
 
 lo-sw-angular-fe_loq:
     <<: *counters
     CATDESC: Sunward Fe lowQ Species
     FIELDNAM: SW - Fe lowQ
-    LABL_PTR_1: inst_az
-    LABL_PTR_2: spin_sector
-    LABL_PTR_3: esa_step
+    DEPEND_0: epoch
+    DEPEND_1: esa_step
+    DEPEND_2: inst_az
+    DEPEND_3: spin_sector
+    LABL_PTR_1: esa_step
+    LABL_PTR_2: inst_az
+    LABL_PTR_3: spin_sector
 
 lo-nsw-angular-heplusplus:
     <<: *counters
     CATDESC: Non-sunward He++ Species
     FIELDNAM: NSW - He++
-    LABL_PTR_1: inst_az
-    LABL_PTR_2: spin_sector
-    LABL_PTR_3: esa_step
+    DEPEND_0: epoch
+    DEPEND_1: esa_step
+    DEPEND_2: inst_az
+    DEPEND_3: spin_sector
+    LABL_PTR_1: esa_step
+    LABL_PTR_2: inst_az
+    LABL_PTR_3: spin_sector
 
 # lo-sw-priority
 lo-sw-priority-p0_tcrs:
@@ -824,12 +840,6 @@ spin_bin_period:
     <<: *default
     LABLAXIS: SPIN_BIN_PERIOD
     FIELDNAM: Spin Bin Period
-    VAR_TYPE: support_data
-
-spin_period:
-    <<: *default
-    LABLAXIS: SPIN_PERIOD
-    FIELDNAM: Current Spin Period
     VAR_TYPE: support_data
 
 spin_period_timer:
