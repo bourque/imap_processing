@@ -221,7 +221,7 @@ class CoDICEL1aPipeline:
             if variable_name == "energy_table":
                 variable_data = self.get_energy_table()
                 dims = ["esa_step"]
-                attrs = self.cdf_attrs.get_variable_attributes("esa_step")
+                attrs = self.cdf_attrs.get_variable_attributes("energy_table")
 
             elif variable_name == "acquisition_time_per_step":
                 variable_data = self.get_acquisition_times()
@@ -293,6 +293,7 @@ class CoDICEL1aPipeline:
             The list of acquisition times from the Lo stepping table.
         """
         # Read in the Lo stepping data table
+        # TODO: Update this CSV file to have 6 significant digits instead of 3
         lo_stepping_data_file = Path(
             f"{imap_module_directory}/codice/data/lo_stepping_values.csv"
         )
