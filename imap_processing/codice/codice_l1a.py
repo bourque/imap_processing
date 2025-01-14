@@ -236,7 +236,6 @@ class CoDICEL1aPipeline:
             ``xarray`` dataset for the data product, with added support variables.
         """
         for variable_name in self.config["support_variables"]:
-            # These variables require reading in external tables
             if variable_name == "energy_table":
                 variable_data = self.get_energy_table()
                 dims = ["esa_step"]
