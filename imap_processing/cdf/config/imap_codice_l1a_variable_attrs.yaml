@@ -1,15 +1,9 @@
 # <=== Defaults ===>
 default_attrs: &default
-    CATDESC: " "
     DISPLAY_TYPE: no_plot
-    FIELDNAM: ""
     FILLVAL: -9223372036854775808
     FORMAT: I12
-    REFERENCE_POSITION: ""
-    RESOLUTION: ""
     SCALETYP: linear
-    TIME_BASE: ""
-    TIME_SCALE: ""
     UNITS: dN
     VALIDMIN: -9223372036854775808
     VALIDMAX: 9223372036854775807
