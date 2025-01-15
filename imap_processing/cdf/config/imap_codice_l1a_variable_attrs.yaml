@@ -544,85 +544,65 @@ lo-nsw-species-cnoplus:
 
 # <=== CCSDS Header Attributes ===>
 version:
-    <<: *default
+    <<: *hskp_default
     CATDESC: CCSDS Packet Version Number (always 0)
-    DEPEND_0: epoch
     FIELDNAM: Version
     LABLAXIS: VERSION
-    VAR_TYPE: support_data
 
 type:
-    <<: *default
+    <<: *hskp_default
     CATDESC: CCSDS Packet Type Indicator (0=telemetry)
-    DEPEND_0: epoch
     FIELDNAM: Type
     LABLAXIS: TYPE
-    VAR_TYPE: support_data
 
 sec_hdr_flg:
-    <<: *default
+    <<: *hskp_default
     CATDESC: CCSDS Packet Secondary Header Flag (always 1)
-    DEPEND_0: epoch
     FIELDNAM: Secondary Header Flag
     LABLAXIS: SEC_HDR_FLG
-    VAR_TYPE: support_data
 
 pkt_apid:
-    <<: *default
+    <<: *hskp_default
     CATDESC: CCSDS Packet Application Process ID
-    DEPEND_0: epoch
     FIELDNAM: Packet APID
     LABLAXIS: PKT_APID
-    VAR_TYPE: support_data
 
 seq_flgs:
-    <<: *default
+    <<: *hskp_default
     CATDESC: CCSDS Packet Grouping Flags (3=not part of group)
-    DEPEND_0: epoch
     FIELDNAM: Grouping Flags
     LABLAXIS: SEQ_FLGS
-    VAR_TYPE: support_data
 
 src_seq_ctr:
-    <<: *default
+    <<: *hskp_default
     CATDESC: CCSDS Packet Sequence Count (increments with each new packet)
-    DEPEND_0: epoch
     FIELDNAM: Packet Sequence Count
     LABLAXIS: SRC_SEQ_CTR
-    VAR_TYPE: support_data
 
 pkt_len:
-    <<: *default
+    <<: *hskp_default
     CATDESC: CCSDS Packet Length (number of bytes after Packet length minus 1)
-    DEPEND_0: epoch
     FIELDNAM: Packet Length
     LABLAXIS: PKT_LEN
-    VAR_TYPE: support_data
 
 shcoarse:
-    <<: *default
+    <<: *hskp_default
     CATDESC: Secondary Header - Whole-seconds part of SCLK
-    DEPEND_0: epoch
     FIELDNAM: S/C Time - Seconds
     LABLAXIS: SHCOARSE
-    VAR_TYPE: support_data
 
 packet_version:
-    <<: *default
+    <<: *hskp_default
     CATDESC: See VAR_NOTES
-    DEPEND_0: epoch
     FIELDNAM: Packet Version
     LABLAXIS: PACKET_VERSION
     VAR_NOTES: Packet version - this will be incremented each time the format of the packet changes.
-    VAR_TYPE: support_data
 
 chksum:
-    <<: *default
+    <<: *hskp_default
     CATDESC: Packet Checksum
-    DEPEND_0: epoch
     LABLAXIS: CHKSUM
     FIELDNAM: Packet Checksum
-    VAR_TYPE: support_data
 
 # <=== Housekeeping Attributes ===>
 cmdexe:
