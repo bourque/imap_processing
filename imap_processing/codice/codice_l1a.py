@@ -99,7 +99,17 @@ class CoDICEL1aPipeline:
         epoch : NDArray[int]
             List of epoch values.
         """
-        epoch = met_to_j2000ns(self.dataset.acq_start_seconds)
+        # Convert the acq_start_subseconds field from microseconds to seconds
+        subseconds = [value / 1000000 for value in self.dataset.acq_start_subseconds]
+
+        # Combine the acq_start_seconds and acq_start_subseconds fields to
+        # get the true acquisition start time
+        acq_start_times = np.add(
+            self.dataset.acq_start_seconds.data, subseconds
+        ).tolist()
+
+        # Calculate epoch
+        epoch = met_to_j2000ns(acq_start_times)
 
         return epoch
 
