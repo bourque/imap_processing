@@ -123,7 +123,7 @@ energy_table:
 
 nso_half_spin:
     <<: *default
-    CATDESC: See VAR_NOTES
+    CATDESC: When No Scan Operation (NSO) was activated
     DEPEND_0: epoch
     DISPLAY_TYPE: time_series
     FIELDNAM: NSO Mode
@@ -140,7 +140,7 @@ nso_half_spin:
 
 rgfo_half_spin:
     <<: *default
-    CATDESC: See VAR_NOTES
+    CATDESC: When Reduced Gain Factor Operation (RGFO) was activated
     DEPEND_0: epoch
     DISPLAY_TYPE: time_series
     FIELDNAM: RGFO Mode
@@ -173,7 +173,7 @@ spin_period:
 
 st_bias_gain_mode:
     <<: *default
-    CATDESC: See VAR_NOTES
+    CATDESC: Suprathermal Bias Gain Mode
     DEPEND_0: epoch
     DISPLAY_TYPE: " "
     FIELDNAM: Suprathermal Bias Gain Mode
@@ -190,7 +190,7 @@ st_bias_gain_mode:
 
 sw_bias_gain_mode:
     <<: *default
-    CATDESC: See VAR_NOTES
+    CATDESC: Solarwind Bias Gain Mode
     DEPEND_0: epoch
     DISPLAY_TYPE: " "
     FIELDNAM: Solarwind Bias Gain Mode
