@@ -20,7 +20,6 @@ TEST_L1A_FILES = [
     TEST_DATA_PATH / "imap_codice_l1a_lo-nsw-species_20240429_v001.pkts",
 ]
 
-# Placeholder for validation data files
 # ruff: noqa
 VALIDATION_DATA = [
     TEST_DATA_PATH / "validation" / "imap_codice_l1a_hi-ialirt_20241110193700_v0.0.0.cdf",

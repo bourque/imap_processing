@@ -40,7 +40,7 @@ inst_az:
     FIELDNAM: Azimuth Index
     FILLVAL: 254
     FORMAT: I3
-    LABLAXIS: " "
+    LABLAXIS: Azimuth Index
     SI_CONVERSION: " > "
     UNITS: " "
     VALIDMIN: 0
@@ -53,7 +53,7 @@ spin_sector:
     FIELDNAM: Spin Sector Index
     FILLVAL: 254
     FORMAT: I3
-    LABLAXIS: " "
+    LABLAXIS: Spin Sector
     SI_CONVERSION: " > "
     UNITS: " "
     VALIDMIN: 0
@@ -69,7 +69,7 @@ acquisition_time_per_step:
     FIELDNAM: Acquisition Time
     FILLVAL: -1.0e+30
     FORMAT: F10.3
-    LABLAXIS: " "
+    LABLAXIS: Acquisition Time
     SCALETYP: linear
     SI_CONVERSION: " > "
     UNITS: ms
@@ -123,7 +123,7 @@ energy_table:
 
 nso_half_spin:
     <<: *default
-    CATDESC: Indicates the point when No Scan Operation (NSO) was activated. In NSO, the ESA voltage is set to the first step in the scan and remains fixed until the next cycle boundary.
+    CATDESC: See VAR_NOTES
     DEPEND_0: epoch
     DISPLAY_TYPE: time_series
     FIELDNAM: NSO Mode
@@ -135,11 +135,12 @@ nso_half_spin:
     UNITS: half spin number
     VALIDMIN: 0
     VALIDMAX: 255
+    VAR_NOTES: Indicates the point when No Scan Operation (NSO) was activated. In NSO, the ESA voltage is set to the first step in the scan and remains fixed until the next cycle boundary.
     VAR_TYPE: data
 
 rgfo_half_spin:
     <<: *default
-    CATDESC: Indicates the point when Reduced Gain Factor Operation (RGFO) was activated. In RGFO, the Entrance ESA voltage is reduced in order to limit the number of ions that reach the detectors.
+    CATDESC: See VAR_NOTES
     DEPEND_0: epoch
     DISPLAY_TYPE: time_series
     FIELDNAM: RGFO Mode
@@ -151,6 +152,7 @@ rgfo_half_spin:
     UNITS: half spin number
     VALIDMIN: 0
     VALIDMAX: 255
+    VAR_NOTES: Indicates the point when Reduced Gain Factor Operation (RGFO) was activated. In RGFO, the Entrance ESA voltage is reduced in order to limit the number of ions that reach the detectors.
     VAR_TYPE: data
 
 spin_period:
@@ -171,34 +173,36 @@ spin_period:
 
 st_bias_gain_mode:
     <<: *default
-    CATDESC: Indicates whether FSW is tracking the Suprathermal High-Gain bias curve or the Suprathermal Low-Gain bias curve.
+    CATDESC: See VAR_NOTES
     DEPEND_0: epoch
     DISPLAY_TYPE: " "
     FIELDNAM: Suprathermal Bias Gain Mode
     FILLVAL: 255
     FORMAT: I1
-    LABLAXIS: " "
+    LABLAXIS: Suprathermal Bias Gain Mode
     SCALETYP: linear
     SI_CONVERSION: " > "
     UNITS: " "
     VALIDMIN: 0
     VALIDMAX: 1
+    VAR_NOTES: Indicates whether FSW is tracking the Suprathermal High-Gain bias curve or the Suprathermal Low-Gain bias curve.
     VAR_TYPE: data
 
 sw_bias_gain_mode:
     <<: *default
-    CATDESC: Indicates whether FSW is tracking the Solarwind High-Gain bias curve or the Solarwind Low-Gain bias curve.
+    CATDESC: See VAR_NOTES
     DEPEND_0: epoch
     DISPLAY_TYPE: " "
     FIELDNAM: Solarwind Bias Gain Mode
     FILLVAL: 255
     FORMAT: I1
-    LABLAXIS: " "
+    LABLAXIS: Solarwind Bias Gain Mode
     SCALETYP: linear
     SI_CONVERSION: " > "
     UNITS: " "
     VALIDMIN: 0
     VALIDMAX: 1
+    VAR_NOTES: Indicates whether FSW is tracking the Solarwind High-Gain bias curve or the Solarwind Low-Gain bias curve.
     VAR_TYPE: data
 
 # The following are data product-specific

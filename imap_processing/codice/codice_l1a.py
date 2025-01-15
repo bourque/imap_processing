@@ -216,6 +216,15 @@ class CoDICEL1aPipeline:
         dataset : xarray.Dataset
             ``xarray`` dataset for the data product, with added support variables.
         """
+        # These variables can be gathered from the packet data
+        packet_data_variables = [
+            "rgfo_half_spin",
+            "nso_half_spin",
+            "sw_bias_gain_mode",
+            "st_bias_gain_mode",
+            "spin_period",
+        ]
+
         for variable_name in self.config["support_variables"]:
             # These variables require reading in external tables
             if variable_name == "energy_table":
@@ -230,36 +239,17 @@ class CoDICEL1aPipeline:
                     "acquisition_time_per_step"
                 )
 
-            # These variables can be gathered from the packet data
-            elif variable_name == "rgfo_half_spin":
-                variable_data = self.dataset.rgfo_half_spin.data
+            elif variable_name in packet_data_variables:
+                variable_data = self.dataset[variable_name].data
                 dims = ["epoch"]
-                attrs = self.cdf_attrs.get_variable_attributes("rgfo_half_spin")
+                attrs = self.cdf_attrs.get_variable_attributes(variable_name)
 
-            elif variable_name == "nso_half_spin":
-                variable_data = self.dataset.nso_half_spin.data
-                dims = ["epoch"]
-                attrs = self.cdf_attrs.get_variable_attributes("nso_half_spin")
-
-            elif variable_name == "sw_bias_gain_mode":
-                variable_data = self.dataset.sw_bias_gain_mode.data
-                dims = ["epoch"]
-                attrs = self.cdf_attrs.get_variable_attributes("sw_bias_gain_mode")
-
-            elif variable_name == "st_bias_gain_mode":
-                variable_data = self.dataset.st_bias_gain_mode.data
-                dims = ["epoch"]
-                attrs = self.cdf_attrs.get_variable_attributes("st_bias_gain_mode")
-
+            # Data quality is named differently in packet data and needs to be
+            # treated slightly differently
             elif variable_name == "data_quality":
                 variable_data = self.dataset.suspect.data
                 dims = ["epoch"]
                 attrs = self.cdf_attrs.get_variable_attributes("data_quality")
-
-            elif variable_name == "spin_period":
-                variable_data = self.dataset.spin_period.data
-                dims = ["epoch"]
-                attrs = self.cdf_attrs.get_variable_attributes("spin_period")
 
             # TODO: Still need to implement
             elif variable_name == "spin_sector_pairs":
