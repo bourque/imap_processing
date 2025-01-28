@@ -201,7 +201,14 @@ class CoDICEL1aPipeline:
         for counter, variable_name in zip(
             range(all_data.shape[1]), self.config["variable_names"]
         ):
-            counter_data = all_data[:, counter, :, :, :]
+            # Dynamically determine the slicing required to extract the
+            # counter data, since the number of dimensions may vary
+            # The counter dimension is always the first
+            slicing = [slice(None)] * all_data.ndim
+            slicing[1] = counter
+
+            # Extract the counter data
+            counter_data = all_data[tuple(slicing)]
 
             # Get the CDF attributes
             descriptor = self.config["dataset_name"].split("imap_codice_l1a_")[-1]
@@ -393,24 +400,50 @@ class CoDICEL1aPipeline:
         """
         self.data = []
 
-        # For CoDICE-lo, data are a 3D arrays with a shape representing
+        # For CoDICE-lo, typical data are a 3D arrays with a shape representing
         # [<num_positions>,<num_spin_sectors>,<num_energy_steps>]
+        # TODO: The order of this matters for each data product
+        if self.config["dataset_name"] in [
+            "imap_codice_l1a_lo-sw-angular",
+            "imap_codice_l1a_lo-nsw-angular",
+        ]:
+            codice_lo_dimensions = [
+                self.config["num_counters"],
+                self.config["num_positions"],
+                self.config["num_spin_sectors"],
+                self.config["num_energy_steps"],
+            ]
+        elif self.config["dataset_name"] == "imap_codice_l1a_lo-sw-species":
+            codice_lo_dimensions = [
+                self.config["num_counters"],
+                self.config["num_positions"],
+                self.config["num_energy_steps"],
+                self.config["num_spin_sectors"],
+            ]
+        else:
+            codice_lo_dimensions = [
+                self.config["num_counters"],
+                self.config["num_energy_steps"],
+                self.config["num_positions"],
+                self.config["num_spin_sectors"],
+            ]
+
+        # However, some CoDICE-Lo products don't have some of these dimensions,
+        # so remove those that don't exist
+        valid_dims = tuple(dim for dim in codice_lo_dimensions if dim > 0)
+
+        # Reshape the data over the valid dimensions
         if self.config["instrument"] == "lo":
             for packet_data in self.raw_data:
                 if packet_data:
                     reshaped_packet_data = np.array(
                         packet_data, dtype=np.uint32
-                    ).reshape(
-                        (
-                            self.config["num_counters"],
-                            self.config["num_energy_steps"],
-                            self.config["num_positions"],
-                            self.config["num_spin_sectors"],
-                        )
-                    )
+                    ).reshape(valid_dims)
                     self.data.append(reshaped_packet_data)
                 else:
                     self.data.append(None)
+
+        # 2048 split into 16 * 1 * 128
 
         # For CoDICE-hi, data are a 3D array with a shape representing
         # [<num_energy_steps>,<num_positions>,<num_spin_sectors>]
@@ -431,6 +464,7 @@ class CoDICEL1aPipeline:
                 else:
                     self.data.append(None)
 
+        # self.data is a list of length 77 each element of shape (16, 1, 128)
         # No longer need to keep the raw data around
         del self.raw_data
 
@@ -665,6 +699,7 @@ def process_codice_l1a(file_path: Path, data_version: str) -> list[xr.Dataset]:
 
         # Everything else
         elif apid in constants.APIDS_FOR_SCIENCE_PROCESSING:
+            # if apid == CODICEAPID.COD_LO_SW_ANGULAR_COUNTS:
             # Extract the data
             science_values = [packet.data for packet in dataset.data]
 
@@ -678,6 +713,13 @@ def process_codice_l1a(file_path: Path, data_version: str) -> list[xr.Dataset]:
             pipeline.reshape_data()
             pipeline.define_coordinates()
             processed_dataset = pipeline.define_data_variables()
+
+            # print('here')
+            # import numpy as np
+            # np.set_printoptions(threshold=np.inf)
+            # print(processed_dataset.hplus.data.shape)
+            # print(processed_dataset.hplus.data[0])
+            # print(processed_dataset.hplus.data[0].shape)
 
             logger.info(f"\nFinal data product:\n{processed_dataset}\n")
 
@@ -698,3 +740,21 @@ def process_codice_l1a(file_path: Path, data_version: str) -> list[xr.Dataset]:
         processed_datasets.append(processed_dataset)
 
     return processed_datasets
+
+
+# if __name__ == "__main__":
+#     from imap_processing import imap_module_directory
+#     from imap_processing.cdf.utils import write_cdf
+#
+#     TEST_DATA_PATH = imap_module_directory / "tests" / "codice" / "data"
+#     file_path = TEST_DATA_PATH / "imap_codice_l0_raw_20241110_v001.pkts"
+#
+#     processed_datasets = process_codice_l1a(file_path, "001")
+#
+#     for dataset in processed_datasets:
+#         if dataset is not None:
+#             try:
+#                 filename = write_cdf(dataset)
+#                 print(filename)
+#             except:
+#                 pass
