@@ -31,6 +31,17 @@ APIDS_FOR_SCIENCE_PROCESSING = [
 
 
 # CDF-friendly names for lo data products
+LO_IAL_VARIABLE_NAMES = [
+    "heplusplus",
+    "cplus5",
+    "cplus6",
+    "oplus6",
+    "oplus7",
+    "oplus8",
+    "mg",
+    "fe_loq",
+    "fe_hiq",
+]
 LO_INST_COUNTS_AGGREGATED_VARIABLE_NAMES = ["aggregated"]
 LO_INST_COUNTS_SINGLES_VARIABLE_NAMES = ["apd_singles"]
 LO_SW_ANGULAR_VARIABLE_NAMES = ["hplus", "heplusplus", "oplus6", "fe_loq"]
@@ -128,6 +139,17 @@ DATA_PRODUCT_CONFIGURATIONS = {
         "num_counters": 4,
         "support_variables": ["data_quality", "spin_period"],
         "variable_names": HI_SECT_SPECIES_VARIABLE_NAMES,
+    },
+    CODICEAPID.COD_LO_IAL: {
+        "dataset_name": "imap_codice_l1a_lo-ialirt",
+        "dims": {"esa_step": 128, "inst_az": 1, "spin_sector": 1},
+        "instrument": "lo",
+        "num_counters": 9,
+        "support_variables": [
+            "energy_table",
+            "acquisition_time_per_step",
+        ],  # TODO: Double check with Joey
+        "variable_names": LO_IAL_VARIABLE_NAMES,
     },
     CODICEAPID.COD_LO_INST_COUNTS_AGGREGATED: {
         "dataset_name": "imap_codice_l1a_lo-counters-aggregated",

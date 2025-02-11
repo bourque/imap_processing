@@ -27,6 +27,7 @@ from imap_processing.codice import constants
 from imap_processing.codice.codice_l0 import decom_packets
 from imap_processing.codice.decompress import decompress
 from imap_processing.codice.utils import CODICEAPID
+from imap_processing.ialirt.l0.process_codicelo import process_codicelo
 from imap_processing.spice.time import met_to_ttj2000ns
 
 logger = logging.getLogger(__name__)
@@ -128,9 +129,7 @@ class CoDICEL1aPipeline:
             compression_algorithm = constants.HI_COMPRESSION_ID_LOOKUP[self.view_id]
 
         self.raw_data = []
-        for packet_data, byte_count in zip(
-            science_values, self.dataset.byte_count.data
-        ):
+        for packet_data, byte_count in zip(science_values, self.dataset.pkt_len.data):
             # Convert from numpy array to byte object
             values = ast.literal_eval(str(packet_data))
 
@@ -635,48 +634,77 @@ def process_codice_l1a(file_path: Path, data_version: str) -> list[xr.Dataset]:
         dataset = datasets[apid]
         logger.info(f"\nProcessing {CODICEAPID(apid).name} packet")
 
-        # Housekeeping data
-        if apid == CODICEAPID.COD_NHK:
-            processed_dataset = create_hskp_dataset(dataset, data_version)
-            logger.info(f"\nFinal data product:\n{processed_dataset}\n")
+        # # Housekeeping data
+        # if apid == CODICEAPID.COD_NHK:
+        #     processed_dataset = create_hskp_dataset(dataset, data_version)
+        #     logger.info(f"\nFinal data product:\n{processed_dataset}\n")
+        #
+        # # Event data
+        # elif apid in [CODICEAPID.COD_LO_PHA, CODICEAPID.COD_HI_PHA]:
+        #     processed_dataset = create_event_dataset(apid, dataset, data_version)
+        #     logger.info(f"\nFinal data product:\n{processed_dataset}\n")
 
-        # Event data
-        elif apid in [CODICEAPID.COD_LO_PHA, CODICEAPID.COD_HI_PHA]:
-            processed_dataset = create_event_dataset(apid, dataset, data_version)
-            logger.info(f"\nFinal data product:\n{processed_dataset}\n")
-
-        # Everything else
-        elif apid in constants.APIDS_FOR_SCIENCE_PROCESSING:
-            # Extract the data
-            science_values = [packet.data for packet in dataset.data]
-
-            # Get the four "main" parameters for processing
-            table_id, plan_id, plan_step, view_id = get_params(dataset)
-
-            # Run the pipeline to create a dataset for the product
+        # I-ALiRT data
+        if apid == CODICEAPID.COD_LO_IAL:
+            ialirt_dataset = process_codicelo(dataset)
+            science_values = [packet.data.astype(int) for packet in ialirt_dataset]
+            table_id, plan_id, plan_step, view_id = 0, 0, 0, 0
             pipeline = CoDICEL1aPipeline(table_id, plan_id, plan_step, view_id)
             pipeline.set_data_product_config(apid, dataset, data_version)
-            pipeline.decompress_data(science_values)
-            pipeline.reshape_data()
-            pipeline.define_coordinates()
-            processed_dataset = pipeline.define_data_variables()
+            pipeline.raw_data = []
+            for packet_data in science_values:
+                pipeline.raw_data.append(packet_data.data)
+            print(pipeline.__dict__["raw_data"][0].shape)
 
-            logger.info(f"\nFinal data product:\n{processed_dataset}\n")
+        # # Everything else
+        # elif apid in constants.APIDS_FOR_SCIENCE_PROCESSING:
+        #     # Extract the data
+        #     science_values = [packet.data for packet in dataset.data]
+        #
+        #     # Get the four "main" parameters for processing
+        #     table_id, plan_id, plan_step, view_id = get_params(dataset)
+        #
+        #     # Run the pipeline to create a dataset for the product
+        #     pipeline = CoDICEL1aPipeline(table_id, plan_id, plan_step, view_id)
+        #     pipeline.set_data_product_config(apid, dataset, data_version)
+        #     pipeline.decompress_data(science_values)
+        #     pipeline.reshape_data()
+        #     pipeline.define_coordinates()
+        #     processed_dataset = pipeline.define_data_variables()
+        #
+        #     logger.info(f"\nFinal data product:\n{processed_dataset}\n")
 
-        # TODO: Still need to implement I-ALiRT and hi-priorities data products
-        elif apid in [
-            CODICEAPID.COD_HI_INST_COUNTS_PRIORITIES,
-            CODICEAPID.COD_HI_IAL,
-            CODICEAPID.COD_LO_IAL,
-        ]:
-            logger.info("\tStill need to properly implement")
-            processed_dataset = None
+        # # TODO: Still need to implement I-ALiRT and hi-priorities data products
+        # elif apid in [
+        #     CODICEAPID.COD_HI_INST_COUNTS_PRIORITIES,
+        #     CODICEAPID.COD_HI_IAL,
+        # ]:
+        #     logger.info("\tStill need to properly implement")
+        #     processed_dataset = None
 
-        # For APIDs that don't require processing
-        else:
-            logger.info(f"\t{apid} does not require processing")
-            continue
+        # # For APIDs that don't require processing
+        # else:
+        #     logger.info(f"\t{apid} does not require processing")
+        #     continue
 
-        processed_datasets.append(processed_dataset)
+    #     processed_datasets.append(processed_dataset)
+    #
+    # return processed_datasets
 
-    return processed_datasets
+
+if __name__ == "__main__":
+    from imap_processing import imap_module_directory
+
+    TEST_DATA_PATH = imap_module_directory / "tests" / "codice" / "data"
+    file_path = TEST_DATA_PATH / "imap_codice_l0_raw_20241110_v001.pkts"
+
+    # processed_datasets = process_codice_l1a(file_path, "001")
+    process_codice_l1a(file_path, "001")
+
+    # for dataset in processed_datasets:
+    #     if dataset is not None:
+    #         try:
+    #             filename = write_cdf(dataset)
+    #             print(filename)
+    #         except:
+    #             pass
