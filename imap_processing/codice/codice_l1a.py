@@ -661,6 +661,7 @@ def process_codice_l1a(file_path: Path, data_version: str) -> list[xr.Dataset]:
 
         # Everything else
         elif apid in constants.APIDS_FOR_SCIENCE_PROCESSING:
+            # if apid == CODICEAPID.COD_LO_SW_SPECIES_COUNTS:
             # Extract the data
             science_values = [packet.data for packet in dataset.data]
 
@@ -674,6 +675,7 @@ def process_codice_l1a(file_path: Path, data_version: str) -> list[xr.Dataset]:
             pipeline.reshape_data()
             pipeline.define_coordinates()
             processed_dataset = pipeline.define_data_variables()
+            # print(processed_dataset.hplus.data)
 
             logger.info(f"\nFinal data product:\n{processed_dataset}\n")
 
@@ -694,3 +696,21 @@ def process_codice_l1a(file_path: Path, data_version: str) -> list[xr.Dataset]:
         processed_datasets.append(processed_dataset)
 
     return processed_datasets
+
+
+if __name__ == "__main__":
+    from imap_processing import imap_module_directory
+    from imap_processing.cdf.utils import write_cdf
+
+    TEST_DATA_PATH = imap_module_directory / "tests" / "codice" / "data"
+    file_path = TEST_DATA_PATH / "imap_codice_l0_raw_20241110_v001.pkts"
+
+    processed_datasets = process_codice_l1a(file_path, "001")
+
+    for dataset in processed_datasets:
+        if dataset is not None:
+            try:
+                filename = write_cdf(dataset)
+                print(filename)
+            except:
+                pass

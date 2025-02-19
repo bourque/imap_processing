@@ -220,6 +220,9 @@ def test_l1a_validate_data_arrays(test_l1a_data: xr.Dataset, index):
         "lo-sw-species",
         "lo-nsw-species",
     ]
+    # able_to_be_validated = [
+    #     "lo-sw-species"
+    # ]
     if descriptor in able_to_be_validated:
         counters = getattr(
             constants, f'{descriptor.upper().replace("-","_")}_VARIABLE_NAMES'
@@ -228,11 +231,22 @@ def test_l1a_validate_data_arrays(test_l1a_data: xr.Dataset, index):
         validation_dataset = load_cdf(VALIDATION_DATA[index])
 
         for counter in counters:
-            # Ensure the data array shapes are equal
-            assert (
-                processed_dataset[counter].data.shape
-                == validation_dataset[counter].data.shape
-            )
+            # # Ensure the data array shapes are equal
+            # assert (
+            #     processed_dataset[counter].data.shape
+            #     == validation_dataset[counter].data.shape
+            # )
+
+            print(processed_dataset[counter][38].data)
+            print(validation_dataset[counter][38].data)
+
+            for epoch in range(0, len(processed_dataset[counter])):
+                print(epoch)
+
+                np.testing.assert_equal(
+                    processed_dataset[counter][epoch].data,
+                    validation_dataset[counter][epoch].data,
+                )
 
             # TODO: Once Joey and I figure out some small discrepancies with
             #       some data products, we should get matching data array shapes
