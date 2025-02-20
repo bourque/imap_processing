@@ -220,9 +220,10 @@ def test_l1a_validate_data_arrays(test_l1a_data: xr.Dataset, index):
         "lo-sw-species",
         "lo-nsw-species",
     ]
-    # able_to_be_validated = [
-    #     "lo-sw-species"
-    # ]
+    able_to_be_validated = ["lo-counters-aggregated"]
+
+    # Currently broken: lo-sw-priority, lo-nsw-priority, lo-nsw-angular
+    #                   lo-sw-angular, lo-counters-singles, lo-counters-aggregated
     if descriptor in able_to_be_validated:
         counters = getattr(
             constants, f'{descriptor.upper().replace("-","_")}_VARIABLE_NAMES'
@@ -237,21 +238,15 @@ def test_l1a_validate_data_arrays(test_l1a_data: xr.Dataset, index):
             #     == validation_dataset[counter].data.shape
             # )
 
-            print(processed_dataset[counter][38].data)
-            print(validation_dataset[counter][38].data)
-
             for epoch in range(0, len(processed_dataset[counter])):
-                print(epoch)
+                for angle in range(0, len(processed_dataset[counter][epoch])):
+                    print(processed_dataset[counter][epoch][angle].data)
+                    print(validation_dataset[counter][epoch][angle].data)
 
-                np.testing.assert_equal(
-                    processed_dataset[counter][epoch].data,
-                    validation_dataset[counter][epoch].data,
-                )
-
-            # TODO: Once Joey and I figure out some small discrepancies with
-            #       some data products, we should get matching data array shapes
-            #       AND values (i.e. run assert_array_equal on the arrays,
-            #       instead of just checking shape)
+                    np.testing.assert_equal(
+                        processed_dataset[counter][epoch][angle].data,
+                        validation_dataset[counter][epoch][angle].data,
+                    )
 
     else:
         pytest.xfail(f"Still need to implement validation for {descriptor}")
