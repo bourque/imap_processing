@@ -779,8 +779,9 @@ def process_codice_l1a(file_path: Path, data_version: str) -> list[xr.Dataset]:
 
         # Event data
         elif apid in [CODICEAPID.COD_LO_PHA, CODICEAPID.COD_HI_PHA]:
-            processed_dataset = create_event_dataset(apid, dataset, data_version)
-            logger.info(f"\nFinal data product:\n{processed_dataset}\n")
+            # processed_dataset = create_event_dataset(apid, dataset, data_version)
+            # logger.info(f"\nFinal data product:\n{processed_dataset}\n")
+            logger.info("\tStill need to properly implement")
 
         # Everything else
         elif apid in constants.APIDS_FOR_SCIENCE_PROCESSING:
@@ -806,7 +807,6 @@ def process_codice_l1a(file_path: Path, data_version: str) -> list[xr.Dataset]:
             CODICEAPID.COD_LO_IAL,
         ]:
             logger.info("\tStill need to properly implement")
-            processed_dataset = None
 
         # For APIDs that don't require processing
         else:
@@ -816,3 +816,27 @@ def process_codice_l1a(file_path: Path, data_version: str) -> list[xr.Dataset]:
         processed_datasets.append(processed_dataset)
 
     return processed_datasets
+
+
+if __name__ == "__main__":
+    from imap_processing import imap_module_directory
+    from imap_processing.cdf.utils import write_cdf
+
+    msim3_file_paths = [
+        # Path("/Users/mabo8927/Downloads/imap_codice_l0_raw_20231018_v001.pkts"),  # hi-counters-aggregated has 11 active variables
+        # Path("/Users/mabo8927/Downloads/imap_codice_l0_raw_20250220_v002.pkts"),  # only housekeeping data
+        # Path("/Users/mabo8927/Downloads/imap_codice_l0_raw_20260924_v001.pkts"),  # hi-counters-aggregated has 11 active variables
+        # Path("/Users/mabo8927/Downloads/imap_codice_l0_raw_20260925_v001.pkts"),  # hi-counters-aggregated has 11 active variables
+        # Path("/Users/mabo8927/Downloads/imap_codice_l0_raw_20260926_v001.pkts"),  # only contains hskp and pha data from 09/26. Other data are from 09/25
+    ]
+
+    for file_path in msim3_file_paths:
+        processed_datasets = process_codice_l1a(file_path, "001")
+
+        for dataset in processed_datasets:
+            if dataset is not None:
+                try:
+                    filename = write_cdf(dataset)
+                    print(f"Created file: {filename}")
+                except error as e:
+                    print(e)
