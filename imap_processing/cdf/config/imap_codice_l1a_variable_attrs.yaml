@@ -286,6 +286,16 @@ hi-counters-aggregated-MST:
     CATDESC: Event H - Multi Start (MST)
     FIELDNAM: Multi Start
 
+hi-counters-aggregated-SinglesStarts:
+    <<: *events
+    CATDESC: Event I - Singles - Starts
+    FIELDNAM: Singles Start
+
+hi-counters-aggregated-SinglesStops:
+    <<: *events
+    CATDESC: Event J - Singles - Stops
+    FIELDNAM: Singles Stops
+
 hi-counters-aggregated-Reserved2:
     <<: *events
     CATDESC: Reserved 2
@@ -296,6 +306,11 @@ hi-counters-aggregated-Reserved3:
     CATDESC: Reserved 3
     FIELDNAM: Reserved 3
 
+hi-counters-aggregated-LowTOFCutoff:
+    <<: *events
+    CATDESC: Low TOF Cutoff
+    FIELDNAM: Low TOF Cutoff
+
 hi-counters-aggregated-Reserved4:
     <<: *events
     CATDESC: Reserved 4
@@ -305,21 +320,6 @@ hi-counters-aggregated-Reserved5:
     <<: *events
     CATDESC: Reserved 5
     FIELDNAM: Reserved 5
-
-hi-counters-aggregated-LowTOFCutoff:
-    <<: *events
-    CATDESC: Low TOF Cutoff
-    FIELDNAM: Low TOF Cutoff
-
-hi-counters-aggregated-Reserved6:
-    <<: *events
-    CATDESC: Reserved 6
-    FIELDNAM: Reserved 6
-
-hi-counters-aggregated-Reserved7:
-    <<: *events
-    CATDESC: Reserved 7
-    FIELDNAM: Reserved 7
 
 hi-counters-aggregated-ASIC1FlagInvalid:
     <<: *events
